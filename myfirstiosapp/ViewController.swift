@@ -20,7 +20,7 @@ enum modes {
 class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
-    var num1 : Float = 0
+    var num1 : Float? = nil
     var currentMode : modes = .notSet
     var labelString : String = ""
     var currentResult: Float = 0
@@ -42,11 +42,11 @@ class ViewController: UIViewController {
         
         modeBtnPressedLast = true
         if (labelString != ""){
-            if (num1 == Float(0)){
+            if (num1 == nil){
                 num1 = Float(labelString)!
                 labelString = ""
             } else {
-                num1 = doMath(num1: num1, num2: Float(labelString)!)
+                num1 = doMath(num1: num1!, num2: Float(labelString)!)
             }
         }
         
@@ -64,7 +64,7 @@ class ViewController: UIViewController {
     
     @IBAction func clearPressed(_ sender: UIButton) {
         currentMode = .notSet
-        num1 = 0
+        num1 = nil
         labelString = ""
         updateDisplayLabel(text: "0")
     }
@@ -72,13 +72,13 @@ class ViewController: UIViewController {
     private func reset(){
         currentMode = .notSet
         currentResult = 0
-        num1 = 0
+        num1 = nil
         labelString = ""
     }
     
     @IBAction func calculate(_ sender: UIButton) {
         if (currentMode != .notSet && labelString != ""){
-            num1 = doMath(num1: num1, num2: Float(labelString)!)
+            num1 = doMath(num1: num1!, num2: Float(labelString)!)
             currentMode = .notSet
         }
     }
