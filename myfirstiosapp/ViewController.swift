@@ -21,7 +21,6 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
     var num1 : Float = 0
-    var num2 : Float = 0
     var currentMode : modes = .notSet
     var labelString : String = ""
     var currentResult: Float = 0
@@ -45,10 +44,10 @@ class ViewController: UIViewController {
         if (labelString != ""){
             if (num1 == Float(0)){
                 num1 = Float(labelString)!
+                labelString = ""
             } else {
                 num1 = doMath(num1: num1, num2: Float(labelString)!)
             }
-            labelString = ""
         }
         
         switch mode{
