@@ -20,11 +20,11 @@ enum modes {
 class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
-    var result : Float = 0
     var num1 : Float = 0
     var num2 : Float = 0
     var currentMode : modes = .notSet
     var labelString : String = ""
+    var currentResult: Float = 0
     var calculateBtnPressed: Bool = false
     var modeBtnPressedLast: Bool = false
     
@@ -42,6 +42,14 @@ class ViewController: UIViewController {
         }
         
         modeBtnPressedLast = true
+        if (labelString != ""){
+            if (num1 == Float(0)){
+                num1 = Float(labelString)!
+            } else {
+                num1 = doMath(num1: num1, num2: Float(labelString)!)
+            }
+            labelString = ""
+        }
         
         switch mode{
         case "/":
@@ -53,65 +61,58 @@ class ViewController: UIViewController {
         default:
             currentMode = .minus
         }
-        guard let num: Float = Float(labelString) else {
-            updateDisplayLabel(text: "error")
-            return
-        }
-        num1 = num
     }
     
     @IBAction func clearPressed(_ sender: UIButton) {
         currentMode = .notSet
-        result = 0
         num1 = 0
-        num2  = 0
         labelString = ""
         updateDisplayLabel(text: "0")
     }
     
     private func reset(){
         currentMode = .notSet
-        result = 0
+        currentResult = 0
         num1 = 0
-        num2  = 0
         labelString = ""
     }
     
     @IBAction func calculate(_ sender: UIButton) {
-        guard let num: Float = Float(labelString) else {
-            updateDisplayLabel(text: "error")
-            reset()
-            return
+        if (currentMode != .notSet && labelString != ""){
+            num1 = doMath(num1: num1, num2: Float(labelString)!)
+            currentMode = .notSet
         }
-        num2  = num
+    }
+    
+    private func doMath(num1: Float, num2: Float) -> Float{
+        var result : String = ""
         calculateBtnPressed = true
         switch currentMode {
         case .add:
-            let result : String = String(num1 + num2)
-            updateDisplayLabel(text: result)
-            labelString = result
+            result = String(num1 + num2)
+            currentResult = num1 + num2
         case .minus:
-            let result : String = String(num1 - num2)
-            updateDisplayLabel(text: result)
-            labelString = result
+            result = String(num1 - num2)
+            currentResult = num1 - num2
         case .division:
-            if (Int(num2) == 0){
+            if (num2 == Float(0)){
                 updateDisplayLabel(text: "error")
                 reset()
-                break
+                return 0
             } else{
-                let result : String = String(num1 / num2)
-                updateDisplayLabel(text: result)
-                labelString = result
+                result = String(num1 / num2)
+                currentResult = num1 / num2
             }
         case .multiply:
-            let result : String = String(num1*num2)
-            updateDisplayLabel(text: result)
-            labelString = result
+            result = String(num1*num2)
+            currentResult = num1*num2
         default:
-            return
+            currentResult = 0
+            return 0
         }
-        currentMode = .notSet
+        updateDisplayLabel(text: result)
+        labelString = ""
+        return currentResult
     }
     
     private func appendNumber(digit: String){
@@ -128,6 +129,7 @@ class ViewController: UIViewController {
     
     private func updateDisplayLabel(text: String){
         guard let result : Float = Float(text) else {
+            displayLabel.text = text
             return
         }
         
